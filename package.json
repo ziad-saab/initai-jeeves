@@ -2,14 +2,25 @@
   "name": "initai-jeeves",
   "version": "0.0.0",
   "description": "A tale of love and affection",
-  "main": "behavior/scripts/index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "initai-dev-server"
+    "start": "initai-dev-server",
+    "server": "node server.js",
+    "server:watch": "NODE_ENV=development nodemon server.js",
+    "dev": "npm-run-all --parallel start server:watch"
   },
-  "author": "<my-name> <<my-email-address>>",
+  "author": "Ziad Saab <ziad.saab@gmail.com>",
   "license": "UNLICENSED",
   "dependencies": {
+    "axios": "^0.15.3",
     "initai-dev-server": "^0.4.8",
-    "initai-node": "~0.0.7"
+    "initai-node": "~0.0.7",
+    "morgan": "^1.8.1",
+    "restify": "^4.3.0"
+  },
+  "devDependencies": {
+    "localtunnel": "^1.8.2",
+    "nodemon": "^1.11.0",
+    "npm-run-all": "^4.0.1"
   }
 }
