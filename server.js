@@ -31,18 +31,26 @@ function sendLogicResult(invocationPayload, result) {
     }
   };
 
+  console.log('Sending logic result:\n%s\n\n', JSON.stringify(result, null, 2));
+
   axios.request(requestConfig)
   .then(result => {
-    console.log('Logic result sent\n\n%s', result.data);
+    console.log('Logic result sent:\n%s\n\n', JSON.stringify(result.data, null, 2));
   })
   .catch(err => {
-    console.log('Logic result error\n\n%s', err.stack);
+    console.log('Logic result error:\n%s\n\n', err.stack);
   });
 }
 
 const server = restify.createServer();
 server.use(restify.bodyParser());
 server.use(morgan('dev')); // @TODO change for prod
+server.use((req, res, next) => {
+  if (req.body) {
+    setImmediate(() => console.log(JSON.stringify(req.body, null, 2)));
+  }
+  next();
+})
 
 /**
  * Log any uncaught exceptions for easier debugging
@@ -91,19 +99,19 @@ const PORT = process.env.PORT || 8888;
 server.listen(PORT, () => {
   console.log('%s listening at %s', server.name, server.url);
 
-  if (process.env.NODE_ENV === 'development') {
-    const localtunnel = require('localtunnel');
-
-    const tunnel = localtunnel(PORT, {subdomain: 'ziadsaab'}, (err, tunnel) => {
-      if (err) {
-        console.log('Localtunnel failure', err);
-      }
-      else {
-        console.log('Localtunnel listening at %s', tunnel.url);
-      }
-    });
-
-    tunnel.on('error', err => console.log('Localtunnel error\n\n%s', err));
-    tunnel.on('close', () => console.log('Localtunnel closed'));
-  }
+  // if (process.env.NODE_ENV === 'development') {
+  //   const localtunnel = require('localtunnel');
+  //
+  //   const tunnel = localtunnel(PORT, {subdomain: 'ziadsaab'}, (err, tunnel) => {
+  //     if (err) {
+  //       console.log('Localtunnel failure', err);
+  //     }
+  //     else {
+  //       console.log('Localtunnel listening at %s', tunnel.url);
+  //     }
+  //   });
+  //
+  //   tunnel.on('error', err => console.log('Localtunnel error:\n%s\n\n', err));
+  //   tunnel.on('close', () => console.log('Localtunnel closed'));
+  // }
 });
